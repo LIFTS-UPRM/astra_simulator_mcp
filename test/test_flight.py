@@ -8,7 +8,13 @@ from datetime import datetime, timedelta
 from astra.weather import forecastEnvironment
 from astra import flight
 import astra
-from astra.GFS import GFS_Handler
+from astra.GFS import (
+    ALTITUDE_VARIABLE,
+    GFS_Handler,
+    TEMP_VARIABLE,
+    U_WIND_VARIABLE,
+    V_WIND_VARIABLE,
+)
 import tempfile
 import os
 import numpy as np
@@ -69,10 +75,18 @@ def test_forecast_example_inputs():
 
     # Set up the example input data files (from 24/04/2017, Daytona Beach)
     fileDict = {}
+    legacy_fixture_names = {
+        TEMP_VARIABLE: 'tmpprs',
+        ALTITUDE_VARIABLE: 'hgtprs',
+        U_WIND_VARIABLE: 'ugrdprs',
+        V_WIND_VARIABLE: 'vgrdprs',
+    }
     for paramName in GFS_Handler.weatherParameters.keys():
         fileDict[paramName] = os.path.join(os.path.dirname(astra.__file__),
             '../test/example_data',
-            'gfs_0p50_06z.ascii?{}[12:15][0:46][231:245][545:571]'.format(paramName))
+            'gfs_0p50_06z.ascii?{}[12:15][0:46][231:245][545:571]'.format(
+                legacy_fixture_names[paramName]
+            ))
 
 
     simEnvironment.loadFromNOAAFiles(fileDict)
